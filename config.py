@@ -1,3 +1,5 @@
+import os
+
 API_URL = "https://api.kucoin.com/api/v1/market/candles"
 
 DATABASE_CONFIG = {
