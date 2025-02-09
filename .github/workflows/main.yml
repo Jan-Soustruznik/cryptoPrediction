@@ -31,9 +31,8 @@ jobs:
         python -m venv env
         source env/bin/activate
         pip install -r requirements.txt
-        pip install dropbox tensorflow scikit-learn pandas
 
-    - name: Download data and models from Dropbox
+    - name: Download data from Dropbox
       run: |
         python scripts/dropbox_download.py --token $DROPBOX_TOKEN --path /data --dest $LOCAL_DATA_PATH
         python scripts/dropbox_download.py --token $DROPBOX_TOKEN --path /models --dest $LOCAL_MODEL_PATH
@@ -44,7 +43,7 @@ jobs:
         source env/bin/activate
         python main.py
 
-    - name: Upload updated data and models to Dropbox
+    - name: Upload updated data to Dropbox
       run: |
         python scripts/dropbox_upload.py --token $DROPBOX_TOKEN --source $LOCAL_DATA_PATH --dest /data
         python scripts/dropbox_upload.py --token $DROPBOX_TOKEN --source $LOCAL_MODEL_PATH --dest /models
