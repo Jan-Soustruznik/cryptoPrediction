@@ -2,33 +2,34 @@ import mysql.connector
 from mysql.connector import Error
 from utils.logging_utils import log_change
 
+
 # Save data to database
-def save_to_database(timestamp, real_price, predicted_price, decision, DATABASE_CONFIG):
+def save_to_database(timestamp, symbol, interval, real_price, predicted_price, decision, DATABASE_CONFIG):
     try:
-        connection = mysql.connector.connect(DATABASE_CONFIG)
-        if connection.is_connected():
-            cursor = connection.cursor()
-            query = """
-                INSERT INTO predictions (timestamp, real_price, predicted_price, decision)
-                VALUES (%s, %s, %s, %s)
-            """
-            # Konverze dat na nativní typy Pythonu
-            data = (
-                int(timestamp),            # Ujistěte se, že timestamp je integer
-                float(real_price),         # Převeďte numpy.float64 na float
-                float(predicted_price),     # Převeďte numpy.float64 na float
-                str(decision)              # prevene na string
-            )
-            # Vložení dat
-            cursor.execute(query, data)
-            connection.commit()
-            log_change(f"Prediction saved to database: {real_price} -> {predicted_price}, Decision: {decision}")
-    except Error as e:
+        # connect to db
+        with mysql.connector.connect(**DATABASE_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                query = """
+                    INSERT INTO predictions (timestamp, symbol, cycle, real_price, predicted_price, decision)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """
+                # prepare data
+                data = (
+                    int(timestamp),           # integer
+                    str(symbol),              # string
+                    str(interval),            # string
+                    float(real_price),        # float
+                    float(predicted_price),   # float
+                    str(decision)             # string
+                )
+                # insert to db
+                cursor.execute(query, data)
+                connection.commit()
+                log_change(f"Prediction saved to database: {real_price} -> {predicted_price}, Decision: {decision}")
+
+    except mysql.connector.Error as e:
         log_change(f"Database error: {e}")
-    finally:
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
+
 
 # Fetch predictions from database
 def fetch_predictions_from_db(DATABASE_CONFIG):

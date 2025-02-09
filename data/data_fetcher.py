@@ -35,6 +35,7 @@ def update_historical_data(symbol, interval, DATA_PATH):
     while last_time < current_time:
         request_end_time = min(last_time + 1500 * 60 * 60, current_time)
         data = fetch_historical_data(symbol, interval, last_time, request_end_time, API_URL)
+        print(symbol, interval, last_time, request_end_time, API_URL)
         if data:
             new_data.extend(data)
             last_time = request_end_time
