@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def log_change(message, log_path=f"{LOCAL_LOG_PATH}/model_update_log.txt"):
+def log_change(message, log_path=f"tmp/log/model_update_log.txt"):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     with open(log_path, "a") as log_file:
         log_file.write(f"{timestamp} - {message}\n")
