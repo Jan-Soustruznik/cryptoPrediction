@@ -1,0 +1,51 @@
+name: Crypto Prediction Defaul Manual Run
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-prediction:
+    runs-on: ubuntu-latest
+
+    env:
+      DROPBOX_TOKEN: ${{ secrets.DROPBOX_TOKEN }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      LOCAL_MODEL_PATH: /tmp/model
+      LOCAL_DATA_PATH: /tmp/data
+      LOCAL_LOG_PATH: /tmp/log
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m venv env
+        source env/bin/activate
+        pip install -r requirements.txt
+        pip install dropbox tensorflow scikit-learn pandas
+
+    - name: Download data and models from Dropbox
+      run: |
+        python scripts/dropbox_download.py --token $DROPBOX_TOKEN --path /data --dest $LOCAL_DATA_PATH
+        python scripts/dropbox_download.py --token $DROPBOX_TOKEN --path /models --dest $LOCAL_MODEL_PATH
+        python scripts/dropbox_download.py --token $DROPBOX_TOKEN --path /logs --dest $LOCAL_MODEL_PATH
+
+    - name: Run prediction script
+      run: |
+        source env/bin/activate
+        python main.py
+
+    - name: Upload updated data and models to Dropbox
+      run: |
+        python scripts/dropbox_upload.py --token $DROPBOX_TOKEN --source $LOCAL_DATA_PATH --dest /data
+        python scripts/dropbox_upload.py --token $DROPBOX_TOKEN --source $LOCAL_MODEL_PATH --dest /models
+        python scripts/dropbox_upload.py --token $DROPBOX_TOKEN --source $LOCAL_MODEL_PATH --dest /logs
