@@ -5,3 +5,4 @@ tensorflow-cpu
 scikit-learn
 argparse
 dropbox
+mysql-connector-python
