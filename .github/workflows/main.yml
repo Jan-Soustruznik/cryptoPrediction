@@ -13,9 +13,9 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-      LOCAL_MODEL_PATH: /tmp/model
-      LOCAL_DATA_PATH: /tmp/data
-      LOCAL_LOG_PATH: /tmp/log
+      LOCAL_MODEL_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction
+      LOCAL_DATA_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/historical_data
+      LOCAL_LOG_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/logs
 
     steps:
     - name: Checkout repository
