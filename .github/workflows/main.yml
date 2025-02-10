@@ -13,7 +13,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-      LOCAL_MODEL_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction
+      LOCAL_MODEL_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/models_data
       LOCAL_DATA_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/historical_data
       LOCAL_LOG_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/logs
 

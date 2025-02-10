@@ -31,7 +31,7 @@ def main(symbol, interval):
     X, y, scaler = prepare_data(df)
 
     # Load or create model
-    MODEL_PATH = f"{symbol}_{interval}_model.keras"
+    MODEL_PATH = f"models_data/{symbol}_{interval}_model.keras"
     model = load_or_create_model(X.shape[1:], MODEL_PATH)
 
     # Train the model
