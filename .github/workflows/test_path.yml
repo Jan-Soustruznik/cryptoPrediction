@@ -1,0 +1,27 @@
+name: Debug Paths
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  debug-path:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show current directory
+        run: pwd
+
+      - name: List top-level directories
+        run: ls -la
+
+      - name: List full directory structure
+        run: ls -R /home/runner/work/cryptoPrediction/cryptoPrediction || true
+
+      - name: List all directories in the system (optional)
+        run: ls -R / || true
+
+      - name: Show directories using Python
+        run: python -c "import os; print('\n'.join(os.listdir('/home/runner/work/cryptoPrediction/cryptoPrediction')))"
