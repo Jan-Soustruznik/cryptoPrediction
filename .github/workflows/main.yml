@@ -38,9 +38,9 @@ jobs:
     - name: Download data from Dropbox
       run: |
         source env/bin/activate
-        python scripts/dropbox_download.py --app_key APP_KEY --app_secret APP_SECRET --refresh_token REFRESH_TOKEN --path /data --dest $LOCAL_DATA_PATH
-        python scripts/dropbox_download.py --app_key APP_KEY --app_secret APP_SECRET --refresh_token REFRESH_TOKEN --path /models --dest $LOCAL_MODEL_PATH
-        python scripts/dropbox_download.py --app_key APP_KEY --app_secret APP_SECRET --refresh_token REFRESH_TOKEN --path /logs --dest $LOCAL_LOG_PATH
+        python scripts/dropbox_download.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --path /data --dest $LOCAL_DATA_PATH
+        python scripts/dropbox_download.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --path /models --dest $LOCAL_MODEL_PATH
+        python scripts/dropbox_download.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --path /logs --dest $LOCAL_LOG_PATH
 
     - name: Run prediction script
       run: |
@@ -50,6 +50,6 @@ jobs:
     - name: Upload updated data to Dropbox
       run: |
         source env/bin/activate
-        python scripts/dropbox_upload.py --app_key APP_KEY --app_secret APP_SECRET --refresh_token REFRESH_TOKEN --source $LOCAL_DATA_PATH --dest /data
-        python scripts/dropbox_upload.py --app_key APP_KEY --app_secret APP_SECRET --refresh_token REFRESH_TOKEN --source $LOCAL_MODEL_PATH --dest /models
-        python scripts/dropbox_upload.py --app_key APP_KEY --app_secret APP_SECRET --refresh_token REFRESH_TOKEN --source $LOCAL_LOG_PATH --dest /logs
+        python scripts/dropbox_upload.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --source $LOCAL_DATA_PATH --dest /data
+        python scripts/dropbox_upload.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --source $LOCAL_MODEL_PATH --dest /models
+        python scripts/dropbox_upload.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --source $LOCAL_LOG_PATH --dest /logs
