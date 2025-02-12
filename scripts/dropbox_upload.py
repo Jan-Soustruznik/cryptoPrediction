@@ -1,6 +1,21 @@
 import argparse
 import os
 import dropbox
+import requests
+
+
+def get_access_token(app_key, app_secret, refresh_token):
+    """refresh acess token by refresh token"""
+    response = requests.post("https://api.dropbox.com/oauth2/token", data={
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+        "client_id": app_key,
+        "client_secret": app_secret
+    })
+    if response.status_code == 200:
+        return response.json()["access_token"]
+    else:
+        raise Exception(f"Failed to refresh access token: {response.text}")
 
 def upload_folder(dbx, local_source, remote_dest):
     """
@@ -23,12 +38,15 @@ def upload_folder(dbx, local_source, remote_dest):
 
 def main():
     parser = argparse.ArgumentParser(description="Nahraje složku na Dropbox")
-    parser.add_argument("--token", required=True, help="Dropbox API token")
-    parser.add_argument("--source", required=True, help="Lokální složka ke nahrání")
-    parser.add_argument("--dest", required=True, help="Cílová cesta na Dropboxu (např. /data)")
+    parser.add_argument("--app_key", required=True, help="Dropbox App Key")
+    parser.add_argument("--app_secret", required=True, help="Dropbox App Secret")
+    parser.add_argument("--refresh_token", required=True, help="Dropbox Refresh Token")
+    parser.add_argument("--source", required=True, help="Lokální folder to download")
+    parser.add_argument("--dest", required=True, help="path to folder in Dropbox")
     args = parser.parse_args()
 
-    dbx = dropbox.Dropbox(args.token)
+    access_token = get_access_token(args.app_key, args.app_secret, args.refresh_token)
+    dbx = dropbox.Dropbox(access_token)
     upload_folder(dbx, args.source, args.dest)
 
 if __name__ == "__main__":
