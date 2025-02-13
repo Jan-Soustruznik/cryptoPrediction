@@ -1,0 +1,55 @@
+name: Crypto Prediction BTC-USDT 4hour
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-prediction:
+    runs-on: ubuntu-latest
+
+    env:
+      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+      APP_KEY: ${{ secrets.APP_KEY }}
+      APP_SECRET: ${{ secrets.APP_SECRET }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      LOCAL_MODEL_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/models_data
+      LOCAL_DATA_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/historical_data
+      LOCAL_LOG_PATH: /home/runner/work/cryptoPrediction/cryptoPrediction/logs
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m venv env
+        python -m pip install --upgrade pip
+        source env/bin/activate
+        pip install -r requirements.txt
+
+    - name: Download data from Dropbox
+      run: |
+        source env/bin/activate
+        python scripts/dropbox_download.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --path /data --dest $LOCAL_DATA_PATH
+        python scripts/dropbox_download.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --path /models --dest $LOCAL_MODEL_PATH
+        python scripts/dropbox_download.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --path /logs --dest $LOCAL_LOG_PATH
+
+    - name: Run prediction script
+      run: |
+        source env/bin/activate
+        python main.py btc-usdt 4hour
+
+    - name: Upload updated data to Dropbox
+      run: |
+        source env/bin/activate
+        python scripts/dropbox_upload.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --source $LOCAL_DATA_PATH --dest /data
+        python scripts/dropbox_upload.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --source $LOCAL_MODEL_PATH --dest /models
+        python scripts/dropbox_upload.py --app_key $APP_KEY --app_secret $APP_SECRET --refresh_token $REFRESH_TOKEN --source $LOCAL_LOG_PATH --dest /logs
