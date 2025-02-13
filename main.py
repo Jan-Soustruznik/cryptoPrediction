@@ -21,7 +21,7 @@ def main(symbol, interval):
     clear_session()
 
     # Update historical data
-    DATA_PATH = f"historical_data/{symbol}_{interval}_data.csv"
+    DATA_PATH = f"historical_data/{symbol.lower()}_{interval}_data.csv"
     df = update_historical_data(symbol, interval, DATA_PATH)
 
     # Compute RSI and MACD
@@ -31,7 +31,7 @@ def main(symbol, interval):
     X, y, scaler = prepare_data(df)
 
     # Load or create model
-    MODEL_PATH = f"models_data/{symbol}_{interval}_model.keras"
+    MODEL_PATH = f"models_data/{symbol.lower()}_{interval}_model.keras"
     model = load_or_create_model(X.shape[1:], MODEL_PATH)
 
     # Train the model
@@ -63,5 +63,5 @@ if __name__ == "__main__":
                         help="Interval in hours (default: 1hour)")
 
     args = parser.parse_args()
-
-    main(args.symbol, args.interval)
+    # FIX Validate user input "btc-usdt" -> "BTC-USDT" valid input 
+    main(args.symbol.upper(), args.interval)
