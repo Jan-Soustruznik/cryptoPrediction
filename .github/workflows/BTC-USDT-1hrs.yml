@@ -1,7 +1,9 @@
-name: Crypto Prediction Defaul Manual Run
+name: Crypto Prediction BTC-USDT 1hour
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 */1 * * *'
 
 jobs:
   run-prediction:
@@ -45,7 +47,7 @@ jobs:
     - name: Run prediction script
       run: |
         source env/bin/activate
-        python main.py
+        python main.py btc-usdt 1hour
 
     - name: Upload updated data to Dropbox
       run: |
