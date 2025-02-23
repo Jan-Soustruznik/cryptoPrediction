@@ -45,10 +45,12 @@ def update_historical_data(symbol, interval, DATA_PATH):
 
     if new_data:
         new_df = pd.DataFrame(new_data, columns=["time", "open", "close", "high", "low", "volume", "turnover"])
-        new_df["time"] = pd.to_datetime(new_df["time"], unit='s')
+        # FIX, FutureWarning: Ensure the value is a number (int) before converting to datetime.
+        new_df["time"] = pd.to_datetime(pd.to_numeric(new_df["time"]), unit='s')
         new_df["close"] = new_df["close"].astype(float)
         new_df["volume"] = new_df["volume"].astype(float)
-        df = pd.concat([df, new_df]).drop_duplicates(subset="time").sort_values(by="time")
+        #FIX, FutureWarning: Before concatenating, filter out empty or all-NA columns from new_df
+        df = pd.concat([df, new_df.dropna(axis=1, how='all')]).drop_duplicates(subset="time").sort_values(by="time")
         df.to_csv(DATA_PATH, index=False)
         log_change(f"Historical data updated. {len(new_df)} new rows added.")
     else:
